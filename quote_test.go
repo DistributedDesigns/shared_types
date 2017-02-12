@@ -86,12 +86,7 @@ func TestParseQuote(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name:    "Price stored as string",
-			args:    args{"jappleseed,AAPL,$10.00,123123456,abc123="},
-			wantErr: true,
-		},
-		{
-			name:    "Time stored as string",
+			name:    "Time stored as formatted date",
 			args:    args{"jappleseed,AAPL,10.00,1970-01-01 00:02:03.123456789 +0000 UTC,abc123="},
 			wantErr: true,
 		},
