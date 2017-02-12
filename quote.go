@@ -12,9 +12,9 @@ import (
 
 // Quote : Response from the quoteserver
 type Quote struct {
-	UserID    string
-	Stock     string
 	Price     currency.Currency
+	Stock     string
+	UserID    string
 	Timestamp time.Time
 	Cryptokey string
 }
@@ -23,9 +23,9 @@ type Quote struct {
 func (q *Quote) ToCSV() string {
 	parts := make([]string, 5)
 
-	parts[0] = q.UserID
+	parts[0] = fmt.Sprintf("%.02f", q.Price.ToFloat())
 	parts[1] = q.Stock
-	parts[2] = fmt.Sprintf("%.02f", q.Price.ToFloat())
+	parts[2] = q.UserID
 	parts[3] = fmt.Sprintf("%d", q.Timestamp.UnixNano()/1000)
 	parts[4] = q.Cryptokey
 
@@ -43,7 +43,7 @@ func ParseQuote(csv string) (Quote, error) {
 		return Quote{}, errors.New("Expected 5 values in Quote csv")
 	}
 
-	price, err := currency.NewFromString(parts[2])
+	price, err := currency.NewFromString(parts[0])
 	if err != nil {
 		return Quote{}, err
 	}
@@ -58,9 +58,9 @@ func ParseQuote(csv string) (Quote, error) {
 	nano := milliSec % 1e6 * 1000
 
 	quote := Quote{
-		UserID:    parts[0],
-		Stock:     parts[1],
 		Price:     price,
+		Stock:     parts[1],
+		UserID:    parts[2],
 		Timestamp: time.Unix(sec, nano),
 		Cryptokey: parts[4],
 	}

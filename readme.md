@@ -24,17 +24,17 @@ qr2, error := ParseQuoteRequest("AAPL,jappleseed")
 
 ```go
 type Quote struct {
+  Price     currency.Currency
+  Stock     string
 	UserID    string
-	Stock     string
-	Price     currency.Currency
 	Timestamp time.Time
 	Cryptokey string
 }
 
 tenDollars, _ := currency.NewFromFloat(10.0)
-q := Quote{"jappleseed", "AAPL", tenDollars, time.Now(), "abc123="}
+q := Quote{tenDollars, "AAPL", "jappleseed", time.Now(), "abc123="}
 
-q.ToCSV() // "jappleseed,AAPL,10.00,123123456,abc123="
+q.ToCSV() // "10.00,AAPL,jappleseed,123123456,abc123="
 
-q2, error := ParseQuote("jappleseed,AAPL,10.00,123123456,abc123=")
+q2, error := ParseQuote("10.00,AAPL,jappleseed,123123456,abc123=")
 ```

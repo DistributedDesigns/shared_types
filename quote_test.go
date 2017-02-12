@@ -16,9 +16,9 @@ func TestQuote_ToCSV(t *testing.T) {
 	cryptokey := "abc123="
 
 	type fields struct {
-		UserID    string
-		Stock     string
 		Price     currency.Currency
+		Stock     string
+		UserID    string
 		Timestamp time.Time
 		Cryptokey string
 	}
@@ -29,8 +29,8 @@ func TestQuote_ToCSV(t *testing.T) {
 	}{
 		{
 			name:   "Happy path",
-			fields: fields{userID, stock, tenD, unixTime, cryptokey},
-			want:   "jappleseed,AAPL,10.00,123123456,abc123=",
+			fields: fields{tenD, stock, userID, unixTime, cryptokey},
+			want:   "10.00,AAPL,jappleseed,123123456,abc123=",
 		},
 	}
 	for _, tt := range tests {
@@ -50,9 +50,9 @@ func TestQuote_ToCSV(t *testing.T) {
 }
 
 func TestParseQuote(t *testing.T) {
-	userID := "jappleseed"
-	stock := "AAPL"
 	tenD, _ := currency.NewFromFloat(10.0)
+	stock := "AAPL"
+	userID := "jappleseed"
 	unixTime := time.Unix(123, 123456000)
 	cryptokey := "abc123="
 
@@ -67,27 +67,27 @@ func TestParseQuote(t *testing.T) {
 	}{
 		{
 			name: "Happy path",
-			args: args{"jappleseed,AAPL,10.00,123123456,abc123="},
-			want: Quote{userID, stock, tenD, unixTime, cryptokey},
+			args: args{"10.00,AAPL,jappleseed,123123456,abc123="},
+			want: Quote{tenD, stock, userID, unixTime, cryptokey},
 		},
 		{
 			name:    "Too few args",
-			args:    args{"jappleseed,AAPL,10.00,123123456"},
+			args:    args{"10.00,AAPL,jappleseed,123123456"},
 			wantErr: true,
 		},
 		{
 			name:    "Too many args",
-			args:    args{"jappleseed,AAPL,10.00,123123456,abc123=,hello!"},
+			args:    args{"10.00,AAPL,jappleseed,123123456,abc123=,hello!"},
 			wantErr: true,
 		},
 		{
 			name:    "Price stored as string",
-			args:    args{"jappleseed,AAPL,$10.00,123123456,abc123="},
+			args:    args{"$10.00,AAPL,jappleseed,123123456,abc123="},
 			wantErr: true,
 		},
 		{
 			name:    "Time stored as formatted date",
-			args:    args{"jappleseed,AAPL,10.00,1970-01-01 00:02:03.123456789 +0000 UTC,abc123="},
+			args:    args{"10.00,AAPL,jappleseed,1970-01-01 00:02:03.123456789 +0000 UTC,abc123="},
 			wantErr: true,
 		},
 		// TODO: Pass this test!
