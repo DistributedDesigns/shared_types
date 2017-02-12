@@ -24,8 +24,8 @@ qr2, error := ParseQuoteRequest("AAPL,jappleseed")
 
 ```go
 type Quote struct {
-  Price     currency.Currency
-  Stock     string
+	Price     currency.Currency
+	Stock     string
 	UserID    string
 	Timestamp time.Time
 	Cryptokey string
