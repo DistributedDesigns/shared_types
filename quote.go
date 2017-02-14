@@ -49,19 +49,16 @@ func ParseQuote(csv string) (Quote, error) {
 	}
 
 	// Unix time has to be converted string -> int -> Time
-	milliSec, err := strconv.ParseInt(parts[3], 10, 64)
+	unixTimeSec, err := strconv.ParseInt(parts[3], 10, 64)
 	if err != nil {
 		return Quote{}, err
 	}
-
-	sec := milliSec / 1e6
-	nano := milliSec % 1e6 * 1000
 
 	quote := Quote{
 		Price:     price,
 		Stock:     parts[1],
 		UserID:    parts[2],
-		Timestamp: time.Unix(sec, nano),
+		Timestamp: time.Unix(unixTimeSec, 0),
 		Cryptokey: parts[4],
 	}
 

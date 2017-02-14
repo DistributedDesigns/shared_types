@@ -53,7 +53,7 @@ func TestParseQuote(t *testing.T) {
 	tenD, _ := currency.NewFromFloat(10.0)
 	stock := "AAPL"
 	userID := "jappleseed"
-	unixTime := time.Unix(123, 123456000)
+	unixTime := time.Unix(123456, 0)
 	cryptokey := "abc123="
 
 	type args struct {
@@ -67,22 +67,22 @@ func TestParseQuote(t *testing.T) {
 	}{
 		{
 			name: "Happy path",
-			args: args{"10.00,AAPL,jappleseed,123123456,abc123="},
+			args: args{"10.00,AAPL,jappleseed,123456,abc123="},
 			want: Quote{tenD, stock, userID, unixTime, cryptokey},
 		},
 		{
 			name:    "Too few args",
-			args:    args{"10.00,AAPL,jappleseed,123123456"},
+			args:    args{"10.00,AAPL,jappleseed,123456"},
 			wantErr: true,
 		},
 		{
 			name:    "Too many args",
-			args:    args{"10.00,AAPL,jappleseed,123123456,abc123=,hello!"},
+			args:    args{"10.00,AAPL,jappleseed,123456,abc123=,hello!"},
 			wantErr: true,
 		},
 		{
 			name:    "Price stored as string",
-			args:    args{"$10.00,AAPL,jappleseed,123123456,abc123="},
+			args:    args{"$10.00,AAPL,jappleseed,123456,abc123="},
 			wantErr: true,
 		},
 		{
@@ -90,12 +90,6 @@ func TestParseQuote(t *testing.T) {
 			args:    args{"10.00,AAPL,jappleseed,1970-01-01 00:02:03.123456789 +0000 UTC,abc123="},
 			wantErr: true,
 		},
-		// TODO: Pass this test!
-		// {
-		// 	name: "Time stored with extra precision",
-		// 	args: args{"jappleseed,AAPL,10.00,123123456789,abc123="},
-		// 	want: Quote{userID, stock, tenD, unixTime, cryptokey},
-		// },
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
