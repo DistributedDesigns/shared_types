@@ -12,7 +12,7 @@ func TestQuote_ToCSV(t *testing.T) {
 	userID := "jappleseed"
 	stock := "AAPL"
 	tenD, _ := currency.NewFromFloat(10.0)
-	unixTime := time.Unix(123, 123456789)
+	unixTime := time.Unix(123456, 0)
 	cryptokey := "abc123="
 
 	type fields struct {
@@ -30,7 +30,7 @@ func TestQuote_ToCSV(t *testing.T) {
 		{
 			name:   "Happy path",
 			fields: fields{tenD, stock, userID, unixTime, cryptokey},
-			want:   "10.00,AAPL,jappleseed,123123456,abc123=",
+			want:   "10.00,AAPL,jappleseed,123456,abc123=",
 		},
 	}
 	for _, tt := range tests {

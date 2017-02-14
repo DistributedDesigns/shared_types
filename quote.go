@@ -26,7 +26,7 @@ func (q *Quote) ToCSV() string {
 	parts[0] = fmt.Sprintf("%.02f", q.Price.ToFloat())
 	parts[1] = q.Stock
 	parts[2] = q.UserID
-	parts[3] = fmt.Sprintf("%d", q.Timestamp.UnixNano()/1000)
+	parts[3] = fmt.Sprintf("%d", q.Timestamp.Unix())
 	parts[4] = q.Cryptokey
 
 	return strings.Join(parts, ",")
