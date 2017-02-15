@@ -17,17 +17,19 @@ type Quote struct {
 	UserID    string
 	Timestamp time.Time
 	Cryptokey string
+	ID        uint64
 }
 
 // ToCSV : Serialize the Quote as a CSV
 func (q *Quote) ToCSV() string {
-	parts := make([]string, 5)
+	parts := make([]string, 6)
 
 	parts[0] = fmt.Sprintf("%.02f", q.Price.ToFloat())
 	parts[1] = q.Stock
 	parts[2] = q.UserID
 	parts[3] = fmt.Sprintf("%d", q.Timestamp.Unix())
 	parts[4] = q.Cryptokey
+	parts[5] = strconv.FormatUint(q.ID, 10)
 
 	return strings.Join(parts, ",")
 }
@@ -39,8 +41,8 @@ func ParseQuote(csv string) (Quote, error) {
 
 	parts := strings.Split(csv, ",")
 
-	if len(parts) != 5 {
-		return Quote{}, errors.New("Expected 5 values in Quote csv")
+	if len(parts) != 6 {
+		return Quote{}, errors.New("Expected 6 values in Quote csv")
 	}
 
 	price, err := currency.NewFromString(parts[0])
@@ -54,12 +56,18 @@ func ParseQuote(csv string) (Quote, error) {
 		return Quote{}, err
 	}
 
+	id, err := strconv.ParseUint(parts[5], 10, 64)
+	if err != nil {
+		return Quote{}, err
+	}
+
 	quote := Quote{
 		Price:     price,
 		Stock:     parts[1],
 		UserID:    parts[2],
 		Timestamp: time.Unix(unixTimeSec, 0),
 		Cryptokey: parts[4],
+		ID:        id,
 	}
 
 	return quote, nil

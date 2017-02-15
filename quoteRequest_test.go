@@ -10,6 +10,7 @@ func TestQuoteRequest_ToCSV(t *testing.T) {
 		Stock      string
 		UserID     string
 		AllowCache bool
+		ID         uint64
 	}
 	tests := []struct {
 		name   string
@@ -18,8 +19,8 @@ func TestQuoteRequest_ToCSV(t *testing.T) {
 	}{
 		{
 			name:   "Happy path",
-			fields: fields{"AAPL", "jappleseed", true},
-			want:   "AAPL,jappleseed,true",
+			fields: fields{"AAPL", "jappleseed", true, 1},
+			want:   "AAPL,jappleseed,true,1",
 		},
 	}
 	for _, tt := range tests {
@@ -28,6 +29,7 @@ func TestQuoteRequest_ToCSV(t *testing.T) {
 				Stock:      tt.fields.Stock,
 				UserID:     tt.fields.UserID,
 				AllowCache: tt.fields.AllowCache,
+				ID:         tt.fields.ID,
 			}
 			if got := qr.ToCSV(); got != tt.want {
 				t.Errorf("QuoteRequest.ToCSV() = %v, want %v", got, tt.want)
@@ -48,8 +50,8 @@ func TestParseQuoteRequest(t *testing.T) {
 	}{
 		{
 			name:    "Happy path",
-			args:    args{"AAPL,jappleseed,false"},
-			want:    QuoteRequest{"AAPL", "jappleseed", false},
+			args:    args{"AAPL,jappleseed,false,1"},
+			want:    QuoteRequest{"AAPL", "jappleseed", false, 1},
 			wantErr: false,
 		},
 		{
@@ -59,7 +61,7 @@ func TestParseQuoteRequest(t *testing.T) {
 		},
 		{
 			name:    "Too many args",
-			args:    args{"AAPL,jsmith,false,12345"},
+			args:    args{"AAPL,jsmith,false,1,hello!"},
 			wantErr: true,
 		},
 		{
@@ -69,13 +71,18 @@ func TestParseQuoteRequest(t *testing.T) {
 		},
 		{
 			name:    "Accepts int as bool",
-			args:    args{"AAPL,jappleseed,0"},
-			want:    QuoteRequest{"AAPL", "jappleseed", false},
+			args:    args{"AAPL,jappleseed,0,1"},
+			want:    QuoteRequest{"AAPL", "jappleseed", false, 1},
 			wantErr: false,
 		},
 		{
 			name:    "Does not accept ints beside 0/1",
-			args:    args{"AAPL,jappleseed,2"},
+			args:    args{"AAPL,jappleseed,2,1"},
+			wantErr: true,
+		},
+		{
+			name:    "ID can't be negative",
+			args:    args{"AAPL,jappleseed,false,-1"},
 			wantErr: true,
 		},
 	}
