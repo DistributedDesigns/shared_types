@@ -7,15 +7,16 @@ Objects shared between services. Provides common serialization <-> deserializati
 #### `QuoteRequest`
 ```go
 type QuoteRequest struct {
-	Stock  string
-	UserID string
+	Stock      string
+	UserID     string
+	AllowCache bool
 }
 
-qr := QuoteRequest{ "AAPL", "jappleseed"}
+qr := QuoteRequest{ "AAPL", "jappleseed", true}
 
-qr.ToCSV() // "AAPL,jappleseed"
+qr.ToCSV() // "AAPL,jappleseed,true"
 
-qr2, error := ParseQuoteRequest("AAPL,jappleseed")
+qr2, error := ParseQuoteRequest("AAPL,jappleseed,true")
 ```
 
 #### `Quote`
