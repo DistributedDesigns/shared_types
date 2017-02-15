@@ -6,14 +6,10 @@ import (
 )
 
 func TestQuoteRequest_ToCSV(t *testing.T) {
-	const (
-		stock  = "AAPL"
-		userID = "jappleseed"
-	)
-
 	type fields struct {
-		Stock  string
-		UserID string
+		Stock      string
+		UserID     string
+		AllowCache bool
 	}
 	tests := []struct {
 		name   string
@@ -22,15 +18,16 @@ func TestQuoteRequest_ToCSV(t *testing.T) {
 	}{
 		{
 			name:   "Happy path",
-			fields: fields{stock, userID},
-			want:   stock + "," + userID,
+			fields: fields{"AAPL", "jappleseed", true},
+			want:   "AAPL,jappleseed,true",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			qr := &QuoteRequest{
-				Stock:  tt.fields.Stock,
-				UserID: tt.fields.UserID,
+				Stock:      tt.fields.Stock,
+				UserID:     tt.fields.UserID,
+				AllowCache: tt.fields.AllowCache,
 			}
 			if got := qr.ToCSV(); got != tt.want {
 				t.Errorf("QuoteRequest.ToCSV() = %v, want %v", got, tt.want)
@@ -40,11 +37,6 @@ func TestQuoteRequest_ToCSV(t *testing.T) {
 }
 
 func TestParseQuoteRequest(t *testing.T) {
-	const (
-		stock  = "AAPL"
-		userID = "jappleseed"
-	)
-
 	type args struct {
 		csv string
 	}
@@ -56,26 +48,34 @@ func TestParseQuoteRequest(t *testing.T) {
 	}{
 		{
 			name:    "Happy path",
-			args:    args{stock + "," + userID},
-			want:    QuoteRequest{stock, userID},
+			args:    args{"AAPL,jappleseed,false"},
+			want:    QuoteRequest{"AAPL", "jappleseed", false},
 			wantErr: false,
 		},
 		{
 			name:    "Empty string",
 			args:    args{""},
-			want:    QuoteRequest{},
 			wantErr: true,
 		},
 		{
 			name:    "Too many args",
-			args:    args{"AAPL,jsmith,12345"},
-			want:    QuoteRequest{},
+			args:    args{"AAPL,jsmith,false,12345"},
 			wantErr: true,
 		},
 		{
 			name:    "Too few args",
 			args:    args{"AAPL"},
-			want:    QuoteRequest{},
+			wantErr: true,
+		},
+		{
+			name:    "Accepts int as bool",
+			args:    args{"AAPL,jappleseed,0"},
+			want:    QuoteRequest{"AAPL", "jappleseed", false},
+			wantErr: false,
+		},
+		{
+			name:    "Does not accept ints beside 0/1",
+			args:    args{"AAPL,jappleseed,2"},
 			wantErr: true,
 		},
 	}
