@@ -14,6 +14,7 @@ func TestQuote_ToCSV(t *testing.T) {
 	tenD, _ := currency.NewFromFloat(10.0)
 	unixTime := time.Unix(123456, 0)
 	cryptokey := "abc123="
+	var id uint64 = 1
 
 	type fields struct {
 		Price     currency.Currency
@@ -21,6 +22,7 @@ func TestQuote_ToCSV(t *testing.T) {
 		UserID    string
 		Timestamp time.Time
 		Cryptokey string
+		ID        uint64
 	}
 	tests := []struct {
 		name   string
@@ -29,8 +31,8 @@ func TestQuote_ToCSV(t *testing.T) {
 	}{
 		{
 			name:   "Happy path",
-			fields: fields{tenD, stock, userID, unixTime, cryptokey},
-			want:   "10.00,AAPL,jappleseed,123456,abc123=",
+			fields: fields{tenD, stock, userID, unixTime, cryptokey, id},
+			want:   "10.00,AAPL,jappleseed,123456,abc123=,1",
 		},
 	}
 	for _, tt := range tests {
@@ -41,6 +43,7 @@ func TestQuote_ToCSV(t *testing.T) {
 				Price:     tt.fields.Price,
 				Timestamp: tt.fields.Timestamp,
 				Cryptokey: tt.fields.Cryptokey,
+				ID:        tt.fields.ID,
 			}
 			if got := q.ToCSV(); got != tt.want {
 				t.Errorf("Quote.ToCSV() = %v, want %v", got, tt.want)
@@ -55,6 +58,7 @@ func TestParseQuote(t *testing.T) {
 	userID := "jappleseed"
 	unixTime := time.Unix(123456, 0)
 	cryptokey := "abc123="
+	var id uint64 = 1
 
 	type args struct {
 		csv string
@@ -67,27 +71,32 @@ func TestParseQuote(t *testing.T) {
 	}{
 		{
 			name: "Happy path",
-			args: args{"10.00,AAPL,jappleseed,123456,abc123="},
-			want: Quote{tenD, stock, userID, unixTime, cryptokey},
+			args: args{"10.00,AAPL,jappleseed,123456,abc123=,1"},
+			want: Quote{tenD, stock, userID, unixTime, cryptokey, id},
 		},
 		{
 			name:    "Too few args",
-			args:    args{"10.00,AAPL,jappleseed,123456"},
+			args:    args{"10.00,AAPL,jappleseed,123456,abc123="},
 			wantErr: true,
 		},
 		{
 			name:    "Too many args",
-			args:    args{"10.00,AAPL,jappleseed,123456,abc123=,hello!"},
+			args:    args{"10.00,AAPL,jappleseed,123456,abc123=,1,hello!"},
 			wantErr: true,
 		},
 		{
 			name:    "Price stored as string",
-			args:    args{"$10.00,AAPL,jappleseed,123456,abc123="},
+			args:    args{"$10.00,AAPL,jappleseed,123456,abc123=,1"},
+			wantErr: true,
+		},
+		{
+			name:    "ID is negative",
+			args:    args{"10.00,AAPL,jappleseed,123456,abc123=,-1"},
 			wantErr: true,
 		},
 		{
 			name:    "Time stored as formatted date",
-			args:    args{"10.00,AAPL,jappleseed,1970-01-01 00:02:03.123456789 +0000 UTC,abc123="},
+			args:    args{"10.00,AAPL,jappleseed,1970-01-01 00:02:03.123456789 +0000 UTC,abc123=,1"},
 			wantErr: true,
 		},
 	}
