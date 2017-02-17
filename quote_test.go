@@ -75,6 +75,11 @@ func TestParseQuote(t *testing.T) {
 			want: Quote{tenD, stock, userID, unixTime, cryptokey, id},
 		},
 		{
+			name: "Strips linebreaks",
+			args: args{"10.00,AAPL,jappleseed,123456,abc123=\n,1"},
+			want: Quote{tenD, stock, userID, unixTime, cryptokey, id},
+		},
+		{
 			name:    "Too few args",
 			args:    args{"10.00,AAPL,jappleseed,123456,abc123="},
 			wantErr: true,

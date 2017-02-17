@@ -38,6 +38,7 @@ func (q *Quote) ToCSV() string {
 func ParseQuote(csv string) (Quote, error) {
 	// remove messiness
 	csv = strings.TrimSpace(csv)
+	csv = strings.Replace(csv, "\n", "", -1)
 
 	parts := strings.Split(csv, ",")
 
