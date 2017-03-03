@@ -21,7 +21,7 @@ qr2, error := ParseQuoteRequest("AAPL,jappleseed,true")
 
 #### `Quote`
 - `Price` is serialized as a `float`
-- `Timestamp` is serialized as seconds from the epoch
+- `Timestamp` is serialized as **milliseconds** from the epoch
 
 ```go
 type Quote struct {
@@ -35,7 +35,7 @@ type Quote struct {
 tenDollars, _ := currency.NewFromFloat(10.0)
 q := Quote{tenDollars, "AAPL", "jappleseed", time.Now(), "abc123="}
 
-q.ToCSV() // "10.00,AAPL,jappleseed,123456,abc123="
+q.ToCSV() // "10.00,AAPL,jappleseed,123456789,abc123="
 
-q2, error := ParseQuote("10.00,AAPL,jappleseed,123456,abc123=")
+q2, error := ParseQuote("10.00,AAPL,jappleseed,123456789,abc123=")
 ```
