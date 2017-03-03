@@ -27,7 +27,7 @@ func (q *Quote) ToCSV() string {
 	parts[0] = fmt.Sprintf("%.02f", q.Price.ToFloat())
 	parts[1] = q.Stock
 	parts[2] = q.UserID
-	parts[3] = fmt.Sprintf("%d", q.Timestamp.Unix())
+	parts[3] = fmt.Sprintf("%d", q.Timestamp.UnixNano()/1e6)
 	parts[4] = q.Cryptokey
 	parts[5] = strconv.FormatUint(q.ID, 10)
 
@@ -52,10 +52,12 @@ func ParseQuote(csv string) (Quote, error) {
 	}
 
 	// Unix time has to be converted string -> int -> Time
-	unixTimeSec, err := strconv.ParseInt(parts[3], 10, 64)
+	unixTimeMillisec, err := strconv.ParseInt(parts[3], 10, 64)
 	if err != nil {
 		return Quote{}, err
 	}
+	seconds := unixTimeMillisec / 1e3
+	nano := (unixTimeMillisec % 1e3) * 1e6
 
 	id, err := strconv.ParseUint(parts[5], 10, 64)
 	if err != nil {
@@ -66,7 +68,7 @@ func ParseQuote(csv string) (Quote, error) {
 		Price:     price,
 		Stock:     parts[1],
 		UserID:    parts[2],
-		Timestamp: time.Unix(unixTimeSec, 0),
+		Timestamp: time.Unix(seconds, nano),
 		Cryptokey: parts[4],
 		ID:        id,
 	}
