@@ -10,13 +10,14 @@ type QuoteRequest struct {
 	Stock      string
 	UserID     string
 	AllowCache bool
+	ID         uint64
 }
 
-qr := QuoteRequest{ "AAPL", "jappleseed", true}
+qr := QuoteRequest{ "AAPL", "jappleseed", true, 1}
 
-qr.ToCSV() // "AAPL,jappleseed,true"
+qr.ToCSV() // "AAPL,jappleseed,true,1"
 
-qr2, error := ParseQuoteRequest("AAPL,jappleseed,true")
+qr2, error := ParseQuoteRequest("AAPL,jappleseed,true,1")
 ```
 
 #### `Quote`
