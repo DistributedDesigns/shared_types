@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-// AutoTxInit : Request for auto transaction init
+// AutoTxCancel : Request for auto transaction init
 type AutoTxCancel struct {
 	Stock    string
 	UserID   string
