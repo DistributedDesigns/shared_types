@@ -31,16 +31,6 @@ func ParseAutoTxInit(csv string) (AutoTxInit, error) {
 		return AutoTxInit{}, errors.New("Expected number of values in AutoTxInit csv")
 	}
 
-	// allowCache, err := strconv.ParseBool(parts[2])
-	// if err != nil {
-	// 	return QuoteRequest{}, err
-	// }
-
-	// id, err := strconv.ParseUint(parts[3], 10, 64)
-	// if err != nil {
-	// 	return QuoteRequest{}, err
-	// }
-
 	currAmount, err := currency.NewFromString(parts[0])
 	if err != nil {
 		return AutoTxInit{}, err
