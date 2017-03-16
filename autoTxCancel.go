@@ -12,15 +12,15 @@ import (
 type AutoTxCancel struct {
 	Stock    string
 	UserID   string
-	workerID uint64
+	WorkerID uint64
 }
 
 // ToCSV : Converts the QuoteRequest to a csv
 func (aTx *AutoTxCancel) ToCSV() string {
-	return fmt.Sprintf("%s,%s,%d", aTx.Stock, aTx.UserID, aTx.workerID)
+	return fmt.Sprintf("%s,%s,%d", aTx.Stock, aTx.UserID, aTx.WorkerID)
 }
 
-// ParseQuoteRequest : Parses CSV as QuoteRequest
+// ParseAutoTxCancel : Parses CSV as QuoteRequest
 func ParseAutoTxCancel(csv string) (AutoTxCancel, error) {
 	parts := strings.Split(csv, ",")
 	if len(parts) != 3 {
@@ -35,6 +35,6 @@ func ParseAutoTxCancel(csv string) (AutoTxCancel, error) {
 	return AutoTxCancel{
 		Stock:    parts[0],
 		UserID:   parts[1],
-		workerID: workerNum,
+		WorkerID: workerNum,
 	}, nil
 }

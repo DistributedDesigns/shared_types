@@ -16,15 +16,15 @@ type AutoTxInit struct {
 	Trigger  currency.Currency
 	Stock    string
 	UserID   string
-	workerID uint64
+	WorkerID uint64
 }
 
 // ToCSV : Converts the QuoteRequest to a csv
 func (aTx *AutoTxInit) ToCSV() string {
-	return fmt.Sprintf("%s,%s,%s,%s,%d", aTx.Amount.String(), aTx.Trigger.String(), aTx.Stock, aTx.UserID, aTx.workerID)
+	return fmt.Sprintf("%s,%s,%s,%s,%d", aTx.Amount.String(), aTx.Trigger.String(), aTx.Stock, aTx.UserID, aTx.WorkerID)
 }
 
-// ParseQuoteRequest : Parses CSV as QuoteRequest
+// ParseAutoTxInit : Parses CSV as QuoteRequest
 func ParseAutoTxInit(csv string) (AutoTxInit, error) {
 	parts := strings.Split(csv, ",")
 	if len(parts) != 5 {
@@ -49,6 +49,6 @@ func ParseAutoTxInit(csv string) (AutoTxInit, error) {
 		Trigger:  currTrigger,
 		Stock:    parts[2],
 		UserID:   parts[3],
-		workerID: workerNum,
+		WorkerID: workerNum,
 	}, nil
 }
