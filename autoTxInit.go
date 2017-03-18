@@ -31,11 +31,12 @@ func ParseAutoTxInit(csv string) (AutoTxInit, error) {
 		return AutoTxInit{}, errors.New("Expected number of values in AutoTxInit csv")
 	}
 
-	currAmount, err := currency.NewFromString(parts[0])
+	currAmount, err := currency.NewFromString(strings.Replace(parts[0], "$", "", -1))
 	if err != nil {
 		return AutoTxInit{}, err
 	}
-	currTrigger, err := currency.NewFromString(parts[1])
+
+	currTrigger, err := currency.NewFromString(strings.Replace(parts[1], "$", "", -1))
 	if err != nil {
 		return AutoTxInit{}, err
 	}
