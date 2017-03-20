@@ -21,7 +21,15 @@ type AutoTxInit struct {
 
 // ToCSV : Converts the QuoteRequest to a csv
 func (aTx *AutoTxInit) ToCSV() string {
-	return fmt.Sprintf("%s,%s,%s,%s,%d", aTx.Amount.String(), aTx.Trigger.String(), aTx.Stock, aTx.UserID, aTx.WorkerID)
+	parts := make([]string, 5)
+
+	parts[0] = fmt.Sprintf("%0.2f", aTx.Amount.ToFloat())
+	parts[1] = fmt.Sprintf("%0.2f", aTx.Trigger.ToFloat())
+	parts[2] = aTx.Stock
+	parts[3] = aTx.UserID
+	parts[4] = strconv.FormatUint(aTx.WorkerID, 10)
+
+	return strings.Join(parts, ",")
 }
 
 // ParseAutoTxInit : Parses CSV as QuoteRequest
