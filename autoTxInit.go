@@ -30,7 +30,7 @@ func (aTx *AutoTxInit) ToCSV() string {
 	parts[2] = aTx.Action
 	parts[3] = aTx.Stock
 	parts[4] = aTx.UserID
-	parts[5] = strconv.FormatUint(aTx.WorkerID, 10)
+	parts[5] = fmt.Sprintf("%d", aTx.WorkerID)
 
 	return strings.Join(parts, ",")
 }
