@@ -13,26 +13,21 @@ import (
 
 // AutoTxInit : Request for auto transaction init
 type AutoTxInit struct {
-	Amount   currency.Currency
-	Trigger  currency.Currency
-	Action   string
-	Stock    string
-	UserID   string
-	WorkerID int
+	AutoTxKey AutoTxKey
+	Amount    currency.Currency
+	Trigger   currency.Currency
+	WorkerID  int
 }
 
 // ToCSV : Converts the QuoteRequest to a csv
 func (aTx *AutoTxInit) ToCSV() string {
-	parts := make([]string, 6)
+	parts := make([]string, 3)
 
 	parts[0] = fmt.Sprintf("%0.2f", aTx.Amount.ToFloat())
 	parts[1] = fmt.Sprintf("%0.2f", aTx.Trigger.ToFloat())
-	parts[2] = aTx.Action
-	parts[3] = aTx.Stock
-	parts[4] = aTx.UserID
-	parts[5] = fmt.Sprintf("%d", aTx.WorkerID)
+	parts[2] = fmt.Sprintf("%d", aTx.WorkerID)
 
-	return strings.Join(parts, ",")
+	return fmt.Sprintf("%s,%s", aTx.AutoTxKey.ToCSV(), strings.Join(parts, ","))
 }
 
 // Less : Interface function for llrb
@@ -48,15 +43,16 @@ func (aTx AutoTxInit) Less(than llrb.Item) bool {
 // ParseAutoTxInit : Parses CSV as QuoteRequest
 func ParseAutoTxInit(csv string) (AutoTxInit, error) {
 	parts := strings.Split(csv, ",")
+
 	if len(parts) != 6 {
 		return AutoTxInit{}, errors.New("Expected number of values in AutoTxInit csv")
 	}
 
-	currAmount, err := currency.NewFromString(parts[0])
+	currAmount, err := currency.NewFromString(parts[3])
 	if err != nil {
 		return AutoTxInit{}, err
 	}
-	currTrigger, err := currency.NewFromString(parts[1])
+	currTrigger, err := currency.NewFromString(parts[4])
 	if err != nil {
 		return AutoTxInit{}, err
 	}
@@ -66,11 +62,13 @@ func ParseAutoTxInit(csv string) (AutoTxInit, error) {
 	}
 
 	return AutoTxInit{
+		AutoTxKey: AutoTxKey{
+			Stock:  parts[0],
+			UserID: parts[1],
+			Action: parts[2],
+		},
 		Amount:   currAmount,
 		Trigger:  currTrigger,
-		Action:   parts[2],
-		Stock:    parts[3],
-		UserID:   parts[4],
 		WorkerID: int(workerNum),
 	}, nil
 }
