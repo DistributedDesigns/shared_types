@@ -7,6 +7,7 @@ go:
 before_install:
   - go get -u github.com/distributeddesigns/currency
   - go get -u github.com/alecthomas/gometalinter
+  - go get -u github.com/petar/GoLLRB/llrb
   - gometalinter --install
 
 install:
